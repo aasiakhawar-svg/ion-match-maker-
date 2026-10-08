@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ion Matchmaker: Ionic Formulae Game</title>
+<style>
+:root{--bg:#f6f8fc;--grid:#e3e8f2;--fg:#1b2333;--mut:#566074;--card:#ffffff;--line:#cfd6e4;--metal:#2f6fdb;--metal-t:#e4edfc;--non:#e4673a;--non-t:#fdece5;--ok:#1c9a52;--ok-t:#dff4e7;--bad:#d03b3b;--bad-t:#fbe3e3;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141a26;--grid:#1e2638;--fg:#e8edf7;--mut:#a1abc0;--card:#1c2433;--line:#34405a;--metal:#6c9cf0;--metal-t:#1d2b47;--non:#f08a62;--non-t:#3a2820;--ok:#4cc582;--ok-t:#17331f;--bad:#f07a7a;--bad-t:#3a1d1d}}
+:root[data-theme="dark"]{--bg:#141a26;--grid:#1e2638;--fg:#e8edf7;--mut:#a1abc0;--card:#1c2433;--line:#34405a;--metal:#6c9cf0;--metal-t:#1d2b47;--non:#f08a62;--non-t:#3a2820;--ok:#4cc582;--ok-t:#17331f;--bad:#f07a7a;--bad-t:#3a1d1d}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;color:var(--fg);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;line-height:1.45}
+main{max-width:760px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.7rem;margin:0 0 2px;letter-spacing:-.01em}
+.by{color:var(--mut);margin:0 0 16px;font-size:.95rem}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+nav button{flex:1 1 150px;padding:10px 12px;border:2px solid var(--line);background:var(--card);color:var(--fg);border-radius:10px;font:inherit;font-weight:700;cursor:pointer}
+nav button[aria-selected="true"]{border-color:var(--metal);background:var(--metal-t)}
+nav button:focus-visible,.chip:focus-visible,.slot:focus-visible,.go:focus-visible,.tf button:focus-visible{outline:3px solid var(--metal);outline-offset:2px}
+section{display:none;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:16px}
+section.on{display:block}
+.how{margin:0 0 14px;color:var(--mut)}
+.row{display:grid;grid-template-columns:minmax(120px,1fr) minmax(140px,1.2fr);gap:10px;align-items:center;margin-bottom:8px}
+.lab{font-weight:700}
+.slot{min-height:48px;border:2px dashed var(--line);border-radius:10px;padding:4px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.slot.over{border-color:var(--metal);background:var(--metal-t)}
+.slot.ok{border:2px solid var(--ok);background:var(--ok-t)}
+.slot.bad{border:2px solid var(--bad);background:var(--bad-t)}
+.bank{display:flex;flex-wrap:wrap;gap:8px;min-height:56px;margin:14px 0;padding:10px;border-radius:10px;background:var(--bg);border:2px solid var(--line)}
+.chip{padding:8px 12px;border-radius:10px;border:2px solid var(--non);background:var(--non-t);font-weight:700;cursor:grab;user-select:none;touch-action:manipulation}
+.chip.step{border-color:var(--metal);background:var(--metal-t);font-weight:600;text-align:left}
+.chip.sel{outline:3px solid var(--fg);outline-offset:2px}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.go{padding:10px 18px;border-radius:10px;border:2px solid var(--metal);background:var(--metal);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.go.alt{background:transparent;color:var(--fg);border-color:var(--line)}
+.msg{font-weight:700}
+.tf{border-top:1px solid var(--line);padding:12px 0}
+.tf:first-of-type{border-top:0}
+.tf p{margin:0 0 8px;font-weight:700}
+.tf button{padding:8px 18px;margin-right:8px;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-weight:700;cursor:pointer}
+.tf button.ok{border-color:var(--ok);background:var(--ok-t)}
+.tf button.bad{border-color:var(--bad);background:var(--bad-t)}
+.tf .why{margin:8px 0 0;color:var(--mut);font-size:.95rem}
+@media (max-width:480px){.row{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:no-preference){.slot,.chip{transition:background .15s,border-color .15s}}
+</style>
+</head>
+<body>
+<main>
+<h1>Ion Matchmaker</h1>
+<p class="by">Designed by Aasia Khawar | Grade 10 Chemistry | Edexcel International GCSE 4CH1, spec 1.39</p>
+<nav role="tablist" aria-label="Game rounds">
+<button role="tab" aria-selected="true" data-t="p1">1. Match the formula</button>
+<button role="tab" aria-selected="false" data-t="p2">2. Storyboard order</button>
+<button role="tab" aria-selected="false" data-t="p3">3. True or false</button>
+</nav>
+
+<section id="p1" class="on">
+<p class="how">Drag each formula onto the compound it belongs to. On a phone, tap a formula, then tap a box.</p>
+<div id="g1"></div>
+</section>
+
+<section id="p2">
+<p class="how">Put the six frames of the Mg₃P₂ storyboard in order. Drag each frame into its slot, or tap a frame, then tap a slot.</p>
+<div id="g2"></div>
+</section>
+
+<section id="p3">
+<p class="how">Is each statement true or false? Tap an answer to see why.</p>
+<div id="tf"></div>
+<p class="msg" id="tfmsg">Score: 0 / 8</p>
+<div class="bar"><button class="go alt" id="tfreset">Play again</button></div>
+</section>
+</main>
+
+<script>
+(function(){
+var matchItems=[
+{l:'Sodium oxide',a:'Na\u2082O'},
+{l:'Calcium chloride',a:'CaCl\u2082'},
+{l:'Aluminium oxide',a:'Al\u2082O\u2083'},
+{l:'Magnesium nitride',a:'Mg\u2083N\u2082'},
+{l:'Calcium hydroxide',a:'Ca(OH)\u2082'},
+{l:'Ammonium sulfate',a:'(NH\u2084)\u2082SO\u2084'}];
+var storyItems=[
+{l:'Frame 1',a:'Write the symbols: Mg and P'},
+{l:'Frame 2',a:'Mg is in Group 2: it loses 2 electrons and becomes Mg\u00b2\u207a'},
+{l:'Frame 3',a:'P is in Group 5: it gains 3 electrons and becomes P\u00b3\u207b'},
+{l:'Frame 4',a:'Cross over: the 2 goes to P and the 3 goes to Mg'},
+{l:'Frame 5',a:'Write the formula: Mg\u2083P\u2082'},
+{l:'Frame 6',a:'Check: 3 \u00d7 2+ = +6 and 2 \u00d7 3\u2212 = \u22126, so the charges balance'}];
+var tfItems=[
+{s:'Group 2 metals form ions with a 2+ charge.',v:true,w:'Group 2 metals lose 2 electrons, so Mg\u00b2\u207a and Ca\u00b2\u207a.'},
+{s:'The phosphide ion is P\u00b3\u207b.',v:true,w:'Phosphorus is in Group 5, so it gains 3 electrons.'},
+{s:'The formula of aluminium oxide is AlO.',v:false,w:'Al\u00b3\u207a and O\u00b2\u207b cross over to give Al\u2082O\u2083.'},
+{s:'Mg(NO\u2083)\u2082 contains two nitrate ions.',v:true,w:'The 2 outside the bracket multiplies the whole nitrate ion.'},
+{s:'NaOH needs brackets around the OH.',v:false,w:'There is only one hydroxide ion, so no brackets are needed.'},
+{s:'An ionic compound has an overall charge of zero.',v:true,w:'The total positive charge equals the total negative charge.'},
+{s:'The formula of calcium hydroxide is CaOH\u2082.',v:false,w:'It is Ca(OH)\u2082: the bracket shows both O and H are doubled.'},
+{s:'Fe\u00b3\u207a and O\u00b2\u207b make FeO.',v:false,w:'2 Fe\u00b3\u207a (+6) balance 3 O\u00b2\u207b (\u22126), so the formula is Fe\u2082O\u2083.'}];
+
+function shuffle(a){var b=a.slice(),i,j,t;for(i=b.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));t=b[i];b[i]=b[j];b[j]=t}return b}
+
+function game(id,items,cls){
+var root=document.getElementById(id),sel=null,drag=null;
+function build(){
+root.innerHTML='';
+var rows=document.createElement('div');
+var bank=document.createElement('div');bank.className='bank';
+var bar=document.createElement('div');bar.className='bar';
+var chk=document.createElement('button');chk.className='go';chk.textContent='Check answers';
+var rst=document.createElement('button');rst.className='go alt';rst.textContent='Shuffle and restart';
+var msg=document.createElement('span');msg.className='msg';
+bar.appendChild(chk);bar.appendChild(rst);bar.appendChild(msg);
+var slots=[];
+items.forEach(function(it){
+var r=document.createElement('div');r.className='row';
+var l=document.createElement('div');l.className='lab';l.textContent=it.l;
+var s=document.createElement('div');s.className='slot';s.tabIndex=0;s.dataset.a=it.a;
+s.addEventListener('dragover',function(e){e.preventDefault();s.classList.add('over')});
+s.addEventListener('dragleave',function(){s.classList.remove('over')});
+s.addEventListener('drop',function(e){e.preventDefault();s.classList.remove('over');if(drag)put(s,drag)});
+s.addEventListener('click',function(e){if(sel&&e.target===s)put(s,sel)});
+s.addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&sel){e.preventDefault();put(s,sel)}});
+r.appendChild(l);r.appendChild(s);rows.appendChild(r);slots.push(s)});
+bank.addEventListener('dragover',function(e){e.preventDefault()});
+bank.addEventListener('drop',function(e){e.preventDefault();if(drag){bank.appendChild(drag);clear()}});
+bank.addEventListener('click',function(e){if(sel&&e.target===bank){bank.appendChild(sel);deselect();clear()}});
+shuffle(items).forEach(function(it){
+var c=document.createElement('div');c.className='chip '+cls;c.textContent=it.a;c.dataset.v=it.a;c.draggable=true;c.tabIndex=0;
+c.addEventListener('dragstart',function(e){drag=c;e.dataTransfer.setData('text/plain',it.a)});
+c.addEventListener('dragend',function(){drag=null});
+c.addEventListener('click',function(e){e.stopPropagation();if(sel===c){deselect()}else{deselect();sel=c;c.classList.add('sel')}});
+c.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();c.click()}});
+bank.appendChild(c)});
+function deselect(){if(sel)sel.classList.remove('sel');sel=null}
+function clear(){slots.forEach(function(s){s.classList.remove('ok','bad')});msg.textContent=''}
+function put(s,c){var old=s.querySelector('.chip');if(old&&old!==c)bank.appendChild(old);s.appendChild(c);deselect();clear()}
+chk.addEventListener('click',function(){var n=0;slots.forEach(function(s){var c=s.querySelector('.chip');s.classList.remove('ok','bad');if(c&&c.dataset.v===s.dataset.a){s.classList.add('ok');n++}else{s.classList.add('bad')}});
+msg.textContent=n===slots.length?'All '+n+' correct. Brilliant!':n+' of '+slots.length+' correct. Fix the red boxes and check again.'});
+rst.addEventListener('click',build);
+root.appendChild(rows);root.appendChild(bank);root.appendChild(bar)}
+build()}
+
+game('g1',matchItems,'');
+game('g2',storyItems,'step');
+
+var tf=document.getElementById('tf'),tfmsg=document.getElementById('tfmsg'),score=0,done=0;
+function tfBuild(){
+tf.innerHTML='';score=0;done=0;tfmsg.textContent='Score: 0 / '+tfItems.length;
+shuffle(tfItems).forEach(function(it){
+var d=document.createElement('div');d.className='tf';
+var p=document.createElement('p');p.textContent=it.s;
+var t=document.createElement('button');t.textContent='True';
+var f=document.createElement('button');f.textContent='False';
+var w=document.createElement('p');w.className='why';
+function pick(ans){if(d.dataset.done)return;d.dataset.done='1';done++;
+var right=(ans===it.v);if(right)score++;
+(ans?t:f).classList.add(right?'ok':'bad');
+if(!right)(it.v?t:f).classList.add('ok');
+w.textContent=(right?'Correct. ':'Not quite. ')+it.w;
+tfmsg.textContent='Score: '+score+' / '+tfItems.length+(done===tfItems.length?(score===tfItems.length?'. Perfect!':'. Play again to improve.'):'')}
+t.addEventListener('click',function(){pick(true)});
+f.addEventListener('click',function(){pick(false)});
+d.appendChild(p);d.appendChild(t);d.appendChild(f);d.appendChild(w);tf.appendChild(d)})}
+document.getElementById('tfreset').addEventListener('click',tfBuild);
+tfBuild();
+
+var tabs=document.querySelectorAll('nav button');
+tabs.forEach(function(b){b.addEventListener('click',function(){
+tabs.forEach(function(x){x.setAttribute('aria-selected',x===b?'true':'false')});
+['p1','p2','p3'].forEach(function(id){document.getElementById(id).classList.toggle('on',id===b.dataset.t)})})});
+})();
+</script>
+</body>
+</html>
